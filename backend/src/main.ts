@@ -9,7 +9,6 @@ async function bootstrap() {
   // env validate (fail fast)
   const parsed = envSchema.safeParse(process.env);
   if (!parsed.success) {
-    // eslint-disable-next-line no-console
     console.error(
       'Invalid environment variables:',
       parsed.error.flatten().fieldErrors,
@@ -56,10 +55,12 @@ async function bootstrap() {
   const port = parsed.data.PORT;
   await app.listen(port);
 
-  // eslint-disable-next-line no-console
   console.log(
     `API running on http://localhost:${port}/api | Swagger: /api/docs`,
   );
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Bootstrap error:', err);
+  process.exit(1);
+});
